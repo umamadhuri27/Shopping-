@@ -5,10 +5,23 @@ import CartTile from '../Components/CartTile';
 
 export default function Cart() {
   const [totalCart, setTotalCart] = useState(0);
+  const [totalQuantity, setTotalQuantity] = useState(0);
+
   const { cart } = useSelector((state) => state);
 
   useEffect(() => {
-    setTotalCart(cart.reduce((acc, curr) => acc + curr.price, 0));
+    const totalAmount = cart.reduce((acc, curr) => {
+      const qty = curr.quantity ?? 1;
+      const price = Number(curr.price);
+      return acc + price * qty;
+    }, 0);
+
+    const qtyTotal = cart.reduce((acc, curr) => {
+      return acc + (curr.quantity ?? 1);
+    }, 0);
+
+    setTotalCart(totalAmount);
+    setTotalQuantity(qtyTotal);
   }, [cart]);
 
   return (
@@ -53,8 +66,17 @@ export default function Cart() {
               </h3>
 
               <div className="flex justify-between items-center mb-3">
-                <span className="text-gray-600">Items</span>
-                <span className="font-medium text-gray-800">{cart.length}</span>
+                <span className="text-gray-600">Unique Items</span>
+                <span className="font-medium text-gray-800">
+                  {cart.length}
+                </span>
+              </div>
+
+              <div className="flex justify-between items-center mb-3">
+                <span className="text-gray-600">Total Quantity</span>
+                <span className="font-medium text-gray-800">
+                  {totalQuantity}
+                </span>
               </div>
 
               <div className="flex justify-between items-center mb-6">
@@ -86,5 +108,3 @@ export default function Cart() {
     </div>
   );
 }
-
-
